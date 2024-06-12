@@ -1,4 +1,4 @@
-#if UNITY_2018_2_OR_NEWER
+﻿#if UNITY_2018_2_OR_NEWER
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -154,6 +154,18 @@ namespace Sigtrap.Editors.ShaderStripper {
 							i += 3;
 						} else {
 							i += 2;
+						}
+
+						// it's possible for the variants array to be empty (represented by `variants: []`)
+						if (i >= yaml.Count) {
+							// this was the final entry, we've reached EOF
+							break;
+						}
+
+						if (GetYamlIndent(yaml[i]) == indent) {
+							// the variants array was empty and we're now on the `- first:` line of the next entry
+							i -= 1; // decrement here because the loop will increment
+							continue;
 						}
 
 						indent = GetYamlIndent(yaml[i]);
